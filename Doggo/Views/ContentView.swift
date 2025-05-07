@@ -47,17 +47,17 @@ struct ContentView: View {
                         .ignoresSafeArea()
 
                     List {
-                        ForEach(manager.sessions) { session in
-                            NavigationLink(destination: SessionDetailView(session: binding(for: session))) {
-                                VStack(alignment: .leading) {
-                                    Text(session.mode.rawValue)
-                                        .font(.headline)
-                                    Text(session.players.map(\.name).joined(separator: ", "))
-                                        .foregroundColor(.gray)
-                                        .font(.subheadline)
+                            ForEach(manager.sessions) { session in
+                                NavigationLink(destination: SessionDetailView(manager: GameSessionManager(session: session))) {
+                                    VStack(alignment: .leading) {
+                                        Text(session.mode.rawValue)
+                                            .font(.headline)
+                                        Text(session.players.map(\.name).joined(separator: ", "))
+                                            .foregroundColor(.gray)
+                                            .font(.subheadline)
+                                    }
                                 }
                             }
-                        }
                         .onDelete(perform: manager.removeSession)
                     }
                     .listStyle(InsetGroupedListStyle())

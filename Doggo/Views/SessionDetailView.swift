@@ -8,13 +8,13 @@
 import SwiftUI
 
 struct SessionDetailView: View {
-    @Binding var session: GameSession
+    @StateObject var manager: GameSessionManager
     @State private var newPlayerName = ""
 
     var body: some View {
         VStack(spacing: 0) {
             VStack {
-                Text(session.mode == .doggo ? "🐶 Doggo" : "🐱 Gato")
+                Text(manager.session.mode == .doggo ? "🐶 Doggo" : "🐱 Gato")
                     .font(.custom("ChalkboardSE-Bold", size: 28))
                     .foregroundColor(.brown)
 
@@ -23,11 +23,11 @@ struct SessionDetailView: View {
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .padding(.horizontal)
 
-                    Button(action: {
+                    Button {
                         guard !newPlayerName.isEmpty else { return }
-                        session.players.append(Player(name: newPlayerName))
+                        manager.addPlayer(name: newPlayerName)
                         newPlayerName = ""
-                    }) {
+                    } label: {
                         Image(systemName: "plus.circle.fill")
                             .font(.title)
                             .foregroundColor(.blue)
@@ -39,16 +39,15 @@ struct SessionDetailView: View {
             }
             .background(Color(red: 0.96, green: 0.93, blue: 0.87))
 
-
-            ZStack {
-                Image(session.mode == .doggo ? "doggo_fond" : "gato_fond")
+            ZStack(alignment: .bottom) {
+                Image(manager.session.mode == .doggo ? "doggo_fond" : "gato_fond")
                     .resizable()
                     .scaledToFill()
                     .opacity(0.2)
                     .ignoresSafeArea()
 
                 List {
-                    ForEach(session.players) { player in
+                    ForEach(manager.session.players) { player in
                         VStack(alignment: .leading) {
                             HStack {
                                 VStack(alignment: .leading) {
@@ -59,12 +58,9 @@ struct SessionDetailView: View {
                                 }
                                 Spacer()
                                 HStack(spacing: 8) {
-                                    Button(action: {
-                                        if let index = session.players.firstIndex(where: { $0.id == player.id }),
-                                           session.players[index].score > 0 {
-                                            session.players[index].score -= 1
-                                        }
-                                    }) {
+                                    Button {
+                                        manager.decrementScore(for: player)
+                                    } label: {
                                         Text("-1")
                                             .padding(.vertical, 6)
                                             .padding(.horizontal, 10)
@@ -74,13 +70,10 @@ struct SessionDetailView: View {
                                     }
                                     .buttonStyle(.borderless)
 
-
-                                    Button(action: {
-                                        if let index = session.players.firstIndex(where: { $0.id == player.id }) {
-                                            session.players[index].score += 1
-                                        }
-                                    }) {
-                                        Text(session.mode == .doggo ? "🐶 Doggo !" : "🐱 Gato !")
+                                    Button {
+                                        manager.incrementScore(for: player)
+                                    } label: {
+                                        Text(manager.session.mode == .doggo ? "🐶 Doggo !" : "🐱 Gato !")
                                             .padding(.vertical, 6)
                                             .padding(.horizontal, 10)
                                             .background(Color.green.opacity(0.2))
@@ -94,13 +87,18 @@ struct SessionDetailView: View {
                         .padding(.vertical, 5)
                         .contentShape(Rectangle())
                     }
-                    .onDelete { indexSet in
-                        session.players.remove(atOffsets: indexSet)
-                    }
+                    .onDelete(perform: manager.removePlayers)
                 }
-
                 .listStyle(.plain)
                 .scrollContentBackground(.hidden)
+
+                Text(manager.topScorerText)
+                    .font(.subheadline)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.white.opacity(0.8))
+                    .cornerRadius(12)
+                    .padding()
             }
         }
     }

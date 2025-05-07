@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 class GameManager: ObservableObject {
     @Published var sessions: [GameSession] = [] {
@@ -40,4 +41,3 @@ class GameManager: ObservableObject {
         }
     }
 }
-
