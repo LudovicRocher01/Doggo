@@ -40,4 +40,11 @@ class GameManager: ObservableObject {
             sessions = decoded
         }
     }
+    
+    func updateSession(_ updatedSession: GameSession) {
+        if let index = sessions.firstIndex(where: { $0.id == updatedSession.id }) {
+            sessions[index] = updatedSession
+            saveSessions()
+        }
+    }
 }

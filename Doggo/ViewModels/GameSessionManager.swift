@@ -10,24 +10,33 @@ import AVFoundation
 
 class GameSessionManager: ObservableObject {
     @Published var session: GameSession
+    private weak var globalManager: GameManager?
     private var player: AVAudioPlayer?
 
-    init(session: GameSession) {
+    init(session: GameSession, manager: GameManager) {
         self.session = session
+        self.globalManager = manager
+    }
+    
+    private func save() {
+        globalManager?.updateSession(session)
     }
 
     func addPlayer(name: String) {
         session.players.append(Player(name: name))
+        save()
     }
 
     func removePlayers(at offsets: IndexSet) {
         session.players.remove(atOffsets: offsets)
+        save()
     }
 
     func incrementScore(for player: Player) {
         if let index = session.players.firstIndex(where: { $0.id == player.id }) {
             session.players[index].score += 1
             playSound(for: session.mode)
+            save()
         }
     }
 
@@ -35,6 +44,7 @@ class GameSessionManager: ObservableObject {
         if let index = session.players.firstIndex(where: { $0.id == player.id }),
            session.players[index].score > 0 {
             session.players[index].score -= 1
+            save()
         }
     }
 

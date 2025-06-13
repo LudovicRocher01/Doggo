@@ -48,7 +48,7 @@ struct ContentView: View {
 
                     List {
                             ForEach(manager.sessions) { session in
-                                NavigationLink(destination: SessionDetailView(manager: GameSessionManager(session: session))) {
+                                NavigationLink(destination: SessionDetailView(manager: GameSessionManager(session: session, manager: manager))) {
                                     VStack(alignment: .leading) {
                                         Text(session.mode.rawValue)
                                             .font(.headline)
