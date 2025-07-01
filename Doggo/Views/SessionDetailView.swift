@@ -50,8 +50,11 @@ struct SessionDetailView: View {
                     .ignoresSafeArea()
 
                 List {
-                    Section(header: Text("Joueurs")
-                        .font(.headline)) {
+                    Section(header:
+                        Text("Joueurs")
+                            .font(.headline)
+                            .padding(.horizontal, 10)
+                    ) {
                         ForEach(manager.session.players) { player in
                             VStack(alignment: .leading) {
                                 HStack {
@@ -95,7 +98,11 @@ struct SessionDetailView: View {
                     }
 
                     if !manager.session.pendingRequests.isEmpty {
-                        Section(header: Text("Demandes de participation").font(.headline)) {
+                        Section(header:
+                            Text("Demandes de participation")
+                                .font(.headline)
+                                .padding(.horizontal, 10)
+                        ) {
                             ForEach(manager.session.pendingRequests, id: \.id) { request in
                                 HStack {
                                     Text(request.name)
@@ -103,7 +110,6 @@ struct SessionDetailView: View {
                                     Button(action: {
                                         if let requestPlayer = manager.session.pendingRequests.first(where: { $0.id == request.id }) {
                                             manager.acceptPlayer(requestPlayer)
-                                            print("Joueur accepté")
                                         }
                                     }) {
                                         Text("Accepter")
@@ -114,7 +120,6 @@ struct SessionDetailView: View {
                                     Button(action: {
                                         if let requestPlayer = manager.session.pendingRequests.first(where: { $0.id == request.id }) {
                                             manager.rejectPlayer(requestPlayer)
-                                            print("Joueur rejeté")
                                         }
                                     }) {
                                         Text("Refuser")
@@ -134,6 +139,7 @@ struct SessionDetailView: View {
                             Text(manager.session.creatorID == manager.globalManager?.currentPlayerID ? "🗑 Supprimer la partie" : "🚪 Quitter la partie")
                         }
                     }
+                    .padding(.horizontal, 10)
                 }
                 .listStyle(.plain)
                 .scrollContentBackground(.hidden)
