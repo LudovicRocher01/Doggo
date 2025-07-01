@@ -26,7 +26,6 @@ class GameSessionManager: ObservableObject {
         listener?.remove()
     }
 
-    // 🔁 Écoute en temps réel les changements Firestore pour cette session
     private func startListeningSessionUpdates() {
         guard let id = session.id else { return }
 
@@ -50,16 +49,6 @@ class GameSessionManager: ObservableObject {
     private func save() {
         globalManager?.updateSession(session)
         firestoreService.updateSession(session)
-    }
-
-    func addPlayer(name: String) {
-        session.players.append(Player(name: name))
-        save()
-    }
-
-    func removePlayers(at offsets: IndexSet) {
-        session.players.remove(atOffsets: offsets)
-        save()
     }
 
     func incrementScore(for player: Player) {
@@ -106,28 +95,37 @@ class GameSessionManager: ObservableObject {
     }
 
     func acceptPlayer(_ player: Player) {
-        if let index = session.pendingRequests.firstIndex(where: { $0.id == player.id }) {
-            session.pendingRequests.remove(at: index)
+        guard let index = session.pendingRequests.firstIndex(where: { $0.id == player.id }) else { return }
+        session.pendingRequests.remove(at: index)
+        if !session.players.contains(where: { $0.id == player.id }) {
             session.players.append(player)
-            save()
         }
+        save()
     }
+
+
 
     func rejectPlayer(_ player: Player) {
         session.pendingRequests.removeAll { $0.id == player.id }
+        session.players.removeAll { $0.id == player.id }
         save()
     }
-    
+
     func leaveSession(completion: @escaping () -> Void) {
         let currentID = globalManager?.currentPlayerID ?? ""
+        let isCreator = session.creatorID == currentID
 
         firestoreService.removePlayer(from: session, playerID: currentID) { updatedSession in
             DispatchQueue.main.async {
+                if isCreator {
+                    self.globalManager?.sessions.removeAll { $0.id == self.session.id }
+                    completion()
+                    return
+                }
+
                 if let updated = updatedSession {
                     self.session = updated
                     self.globalManager?.updateSession(updated)
-                } else {
-                    self.globalManager?.sessions.removeAll { $0.id == self.session.id }
                 }
                 completion()
             }
@@ -135,3 +133,4 @@ class GameSessionManager: ObservableObject {
     }
 
 }
+

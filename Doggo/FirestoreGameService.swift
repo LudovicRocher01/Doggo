@@ -87,7 +87,7 @@ class FirestoreGameService {
             if let document = document, document.exists {
                 do {
                     var session = try document.data(as: OnlineSession.self)
-                    
+
                     if !session.pendingRequests.contains(where: { $0.id == player.id }) {
                         session.pendingRequests.append(player)
                         try ref.setData(from: session) { error in
@@ -106,6 +106,7 @@ class FirestoreGameService {
             }
         }
     }
+
     
     func deleteSession(sessionID: String, completion: @escaping (Bool) -> Void) {
         db.collection("sessions").document(sessionID).delete { error in

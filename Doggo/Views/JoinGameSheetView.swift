@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import FirebaseFirestore
 
 struct JoinGameSheetView: View {
     @Binding var joinID: String
@@ -17,41 +18,58 @@ struct JoinGameSheetView: View {
     @State private var alertMessage = ""
 
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 12) {
+            RoundedRectangle(cornerRadius: 3)
+                .fill(Color.gray.opacity(0.4))
+                .frame(width: 40, height: 5)
+                .padding(.top, 8)
+
             Text("Rejoindre une partie")
-                .font(.title2.bold())
-                .padding(.top)
+                .font(.title3.weight(.semibold))
+                .padding(.bottom, 4)
 
             TextField("Code de la partie", text: $joinID)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding(.horizontal)
+                .textFieldStyle(.roundedBorder)
+                .padding(.horizontal, 24)
 
-            TextField("Nom du joueur", text: $joinPlayerName)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding(.horizontal)
+            TextField("Entrez votre nom", text: $joinPlayerName)
+                .textFieldStyle(.roundedBorder)
+                .padding(.horizontal, 24)
 
             Button(action: rejoindrePartie) {
                 Text("Rejoindre")
-                    .font(.headline)
-                    .foregroundColor(.white)
+                    .fontWeight(.semibold)
                     .frame(maxWidth: .infinity)
                     .padding()
                     .background(Color.green)
-                    .cornerRadius(10)
-                    .padding(.horizontal)
+                    .foregroundColor(.white)
+                    .cornerRadius(12)
+                    .padding(.horizontal, 24)
             }
+            .padding(.top, 6)
 
             Button("Annuler") {
+                joinID = ""
+                joinPlayerName = ""
                 showJoinPopup = false
             }
             .foregroundColor(.red)
+            .padding(.top, 2)
 
             Spacer()
         }
         .alert(alertMessage, isPresented: $showAlert) {
-            Button("OK", role: .cancel) { }
+            Button("OK", role: .cancel) {
+                // L'utilisateur a vu le message
+                if alertMessage.contains("✅") {
+                    joinID = ""
+                    joinPlayerName = ""
+                    showJoinPopup = false
+                }
+            }
         }
-        .presentationDetents([.medium])
+        .padding(.bottom)
+        .presentationDetents([.fraction(0.38)])
     }
 
     private func rejoindrePartie() {
@@ -61,23 +79,44 @@ struct JoinGameSheetView: View {
             return
         }
 
-        let firestore = FirestoreGameService()
+        let firestore = Firestore.firestore()
         let player = Player(id: manager.currentPlayerID, name: joinPlayerName)
 
-        firestore.sendJoinRequest(sessionID: joinID, player: player) { success in
-            if success {
-                // Demande acceptée, on attend que l’autre joueur accepte réellement
-                alertMessage = "✅ Demande envoyée !"
+        firestore.collection("sessions").document(joinID).getDocument { document, error in
+            guard let document = document, document.exists else {
+                alertMessage = "❌ Partie introuvable."
                 showAlert = true
-                joinID = ""
-                joinPlayerName = ""
-                showJoinPopup = false
+                return
+            }
 
-                // Démarre un polling pour détecter automatiquement si on est accepté
-                manager.startPollingSessions()
+            do {
+                var session = try document.data(as: OnlineSession.self)
 
-            } else {
-                alertMessage = "❌ Code invalide ou erreur réseau."
+                if session.players.contains(where: { $0.id == player.id }) {
+                    alertMessage = "ℹ️ Vous êtes déjà dans cette partie."
+                    showAlert = true
+                    return
+                }
+
+                if session.pendingRequests.contains(where: { $0.id == player.id }) {
+                    alertMessage = "⏳ Demande déjà envoyée. En attente de réponse."
+                    showAlert = true
+                    return
+                }
+
+                session.pendingRequests.append(player)
+                try firestore.collection("sessions").document(joinID).setData(from: session) { error in
+                    if let error = error {
+                        alertMessage = "❌ Erreur lors de l'envoi : \(error.localizedDescription)"
+                    } else {
+                        alertMessage = "✅ Demande envoyée !"
+                        manager.startPollingSessions()
+                    }
+                    showAlert = true
+                }
+
+            } catch {
+                alertMessage = "❌ Erreur de décodage."
                 showAlert = true
             }
         }

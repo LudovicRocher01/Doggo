@@ -50,7 +50,8 @@ struct SessionDetailView: View {
                     .ignoresSafeArea()
 
                 List {
-                    Section(header: Text("Joueurs").font(.headline)) {
+                    Section(header: Text("Joueurs")
+                        .font(.headline)) {
                         ForEach(manager.session.players) { player in
                             VStack(alignment: .leading) {
                                 HStack {
@@ -89,25 +90,39 @@ struct SessionDetailView: View {
                                 }
                             }
                             .padding(.vertical, 5)
+                            .padding(.horizontal, 10)
                         }
                     }
 
                     if !manager.session.pendingRequests.isEmpty {
                         Section(header: Text("Demandes de participation").font(.headline)) {
-                            ForEach(manager.session.pendingRequests) { request in
+                            ForEach(manager.session.pendingRequests, id: \.id) { request in
                                 HStack {
                                     Text(request.name)
                                     Spacer()
-                                    Button("Accepter") {
-                                        manager.acceptPlayer(request)
+                                    Button(action: {
+                                        if let requestPlayer = manager.session.pendingRequests.first(where: { $0.id == request.id }) {
+                                            manager.acceptPlayer(requestPlayer)
+                                            print("Joueur accepté")
+                                        }
+                                    }) {
+                                        Text("Accepter")
                                     }
                                     .foregroundColor(.green)
+                                    .buttonStyle(.plain)
 
-                                    Button("Refuser") {
-                                        manager.rejectPlayer(request)
+                                    Button(action: {
+                                        if let requestPlayer = manager.session.pendingRequests.first(where: { $0.id == request.id }) {
+                                            manager.rejectPlayer(requestPlayer)
+                                            print("Joueur rejeté")
+                                        }
+                                    }) {
+                                        Text("Refuser")
                                     }
                                     .foregroundColor(.red)
+                                    .buttonStyle(.plain)
                                 }
+                                .padding(.horizontal, 10)
                             }
                         }
                     }
