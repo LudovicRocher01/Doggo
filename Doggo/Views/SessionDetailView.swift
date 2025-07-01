@@ -86,7 +86,6 @@ struct SessionDetailView: View {
                             }
                             .padding(.vertical, 5)
                         }
-                        .onDelete(perform: manager.removePlayers)
                     }
 
                     if !manager.session.pendingRequests.isEmpty {

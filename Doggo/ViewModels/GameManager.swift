@@ -16,6 +16,7 @@ class GameManager: ObservableObject {
 
     init() {
         refreshSessionsFromFirestore()
+        startPollingSessions()
     }
 
     var currentPlayerID: String {
@@ -73,7 +74,7 @@ class GameManager: ObservableObject {
 
     func startPollingSessions() {
         pollingTimer?.invalidate()
-        pollingTimer = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: true) { _ in
+        pollingTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
             self.refreshSessionsFromFirestore()
         }
     }
