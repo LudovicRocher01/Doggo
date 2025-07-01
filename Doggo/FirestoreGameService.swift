@@ -106,4 +106,29 @@ class FirestoreGameService {
             }
         }
     }
+    
+    func deleteSession(sessionID: String, completion: @escaping (Bool) -> Void) {
+        db.collection("sessions").document(sessionID).delete { error in
+            if let error = error {
+                print("❌ Erreur suppression session : \(error.localizedDescription)")
+                completion(false)
+            } else {
+                completion(true)
+            }
+        }
+    }
+    
+    func removePlayer(from session: OnlineSession, playerID: String, completion: @escaping (OnlineSession?) -> Void) {
+        var updatedSession = session
+        updatedSession.players.removeAll { $0.id == playerID }
+
+        if session.creatorID == playerID {
+            deleteSession(sessionID: session.id ?? "") { _ in
+                completion(nil)
+            }
+        } else {
+            updateSession(updatedSession)
+            completion(updatedSession)
+        }
+    }
 }

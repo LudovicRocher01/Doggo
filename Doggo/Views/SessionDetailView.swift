@@ -9,6 +9,10 @@ import SwiftUI
 
 struct SessionDetailView: View {
     @StateObject var manager: GameSessionManager
+    @Environment(\.presentationMode) var presentationMode
+    @State private var showQuitAlert = false
+    @State private var showToast = false
+    @State private var toastMessage = "✅ Partie quittée"
 
     var body: some View {
         VStack(spacing: 0) {
@@ -107,6 +111,14 @@ struct SessionDetailView: View {
                             }
                         }
                     }
+
+                    Section {
+                        Button(role: .destructive) {
+                            showQuitAlert = true
+                        } label: {
+                            Text(manager.session.creatorID == manager.globalManager?.currentPlayerID ? "🗑 Supprimer la partie" : "🚪 Quitter la partie")
+                        }
+                    }
                 }
                 .listStyle(.plain)
                 .scrollContentBackground(.hidden)
@@ -120,5 +132,40 @@ struct SessionDetailView: View {
                     .padding()
             }
         }
+        .alert(isPresented: $showQuitAlert) {
+            Alert(
+                title: Text("Confirmer"),
+                message: Text(manager.session.creatorID == manager.globalManager?.currentPlayerID ? "Supprimer cette partie ?" : "Quitter cette partie ?"),
+                primaryButton: .destructive(Text("Oui")) {
+                    manager.leaveSession {
+                        toastMessage = manager.session.creatorID == manager.globalManager?.currentPlayerID ?
+                            "🗑 Partie supprimée" : "🚪 Partie quittée"
+                        showToast = true
+
+                        manager.globalManager?.sessions.removeAll { $0.id == manager.session.id }
+
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                            presentationMode.wrappedValue.dismiss()
+                        }
+                    }
+                },
+                secondaryButton: .cancel(Text("Non"))
+            )
+        }
+        .overlay(
+            VStack {
+                if showToast {
+                    Text(toastMessage)
+                        .padding()
+                        .background(Color.black.opacity(0.8))
+                        .foregroundColor(.white)
+                        .cornerRadius(12)
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                        .padding(.bottom, 30)
+                }
+                Spacer()
+            }
+        )
+        .animation(.easeInOut(duration: 0.3), value: showToast)
     }
 }

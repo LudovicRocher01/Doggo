@@ -11,7 +11,7 @@ import FirebaseFirestore
 
 class GameSessionManager: ObservableObject {
     @Published var session: OnlineSession
-    private weak var globalManager: GameManager?
+    weak var globalManager: GameManager?
     private var player: AVAudioPlayer?
     private let firestoreService = FirestoreGameService()
     private var listener: ListenerRegistration?
@@ -23,7 +23,7 @@ class GameSessionManager: ObservableObject {
     }
 
     deinit {
-        listener?.remove() // Arrête l'écoute Firestore quand l'objet est supprimé
+        listener?.remove()
     }
 
     // 🔁 Écoute en temps réel les changements Firestore pour cette session
@@ -117,4 +117,21 @@ class GameSessionManager: ObservableObject {
         session.pendingRequests.removeAll { $0.id == player.id }
         save()
     }
+    
+    func leaveSession(completion: @escaping () -> Void) {
+        let currentID = globalManager?.currentPlayerID ?? ""
+
+        firestoreService.removePlayer(from: session, playerID: currentID) { updatedSession in
+            DispatchQueue.main.async {
+                if let updated = updatedSession {
+                    self.session = updated
+                    self.globalManager?.updateSession(updated)
+                } else {
+                    self.globalManager?.sessions.removeAll { $0.id == self.session.id }
+                }
+                completion()
+            }
+        }
+    }
+
 }
