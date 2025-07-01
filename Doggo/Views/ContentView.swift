@@ -95,7 +95,8 @@ struct ContentView: View {
                 JoinGameSheetView(
                     joinID: $joinID,
                     joinPlayerName: $joinPlayerName,
-                    showJoinPopup: $showJoinPopup
+                    showJoinPopup: $showJoinPopup,
+                    manager: manager
                 )
             }
         }

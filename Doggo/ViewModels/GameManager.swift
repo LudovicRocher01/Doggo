@@ -7,12 +7,15 @@
 
 import Foundation
 import SwiftUI
+import FirebaseFirestore
 
 class GameManager: ObservableObject {
     @Published var sessions: [OnlineSession] = []
 
+    private var pollingTimer: Timer?
+
     init() {
-        loadSessionsFromFirestore()
+        refreshSessionsFromFirestore()
     }
 
     var currentPlayerID: String {
@@ -39,12 +42,44 @@ class GameManager: ObservableObject {
         }
     }
 
-    func loadSessionsFromFirestore() {
-        let service = FirestoreGameService()
-        service.fetchSessions(for: currentPlayerID) { [weak self] sessions in
+    func refreshSessionsFromFirestore() {
+        let firestore = Firestore.firestore()
+        firestore.collection("sessions").getDocuments { [self] snapshot, error in
+            guard let documents = snapshot?.documents else { return }
+
+            var ownedSessions: [OnlineSession] = []
+
+            for doc in documents {
+                if let session = try? doc.data(as: OnlineSession.self) {
+                    if session.creatorID == self.currentPlayerID ||
+                        session.players.contains(where: { $0.id == self.currentPlayerID }) {
+                        
+                        var mutableSession = session
+                        mutableSession.id = doc.documentID
+                        ownedSessions.append(mutableSession)
+                    }
+                }
+            }
+
             DispatchQueue.main.async {
-                self?.sessions = sessions
+                self.sessions = ownedSessions
+
+                if !ownedSessions.isEmpty {
+                    self.stopPollingSessions()
+                }
             }
         }
+    }
+
+    func startPollingSessions() {
+        pollingTimer?.invalidate()
+        pollingTimer = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: true) { _ in
+            self.refreshSessionsFromFirestore()
+        }
+    }
+
+    func stopPollingSessions() {
+        pollingTimer?.invalidate()
+        pollingTimer = nil
     }
 }

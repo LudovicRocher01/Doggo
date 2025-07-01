@@ -5,26 +5,21 @@
 //  Created by Ludovic Rocher on 01/07/2025.
 //
 
-//
-//  JoinGameSheetView.swift
-//  Doggo
-//
-//  Created by Ludovic Rocher on 01/07/2025.
-//
-
 import SwiftUI
 
 struct JoinGameSheetView: View {
     @Binding var joinID: String
     @Binding var joinPlayerName: String
     @Binding var showJoinPopup: Bool
-    @ObservedObject var manager: GameManager = GameManager()
+    var manager: GameManager
+
+    @State private var showAlert = false
+    @State private var alertMessage = ""
 
     var body: some View {
-        VStack {
+        VStack(spacing: 16) {
             Text("Rejoindre une partie")
-                .font(.title2)
-                .bold()
+                .font(.title2.bold())
                 .padding(.top)
 
             TextField("Code de la partie", text: $joinID)
@@ -35,35 +30,56 @@ struct JoinGameSheetView: View {
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding(.horizontal)
 
-            Button("Rejoindre") {
-                guard !joinID.isEmpty, !joinPlayerName.isEmpty else { return }
-
-                let firestore = FirestoreGameService()
-                let player = Player(name: joinPlayerName)
-
-                firestore.sendJoinRequest(sessionID: joinID, player: player) { success in
-                    if success {
-                        print("✅ Demande envoyée")
-                        joinID = ""
-                        joinPlayerName = ""
-                        showJoinPopup = false
-                    } else {
-                        print("❌ Échec de la demande")
-                    }
-                }
+            Button(action: rejoindrePartie) {
+                Text("Rejoindre")
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.green)
+                    .cornerRadius(10)
+                    .padding(.horizontal)
             }
-            .font(.headline)
-            .padding()
-            .frame(maxWidth: .infinity)
-            .background(Color.green.opacity(0.1))
-            .cornerRadius(10)
-            .padding(.horizontal)
 
             Button("Annuler") {
                 showJoinPopup = false
             }
-            .padding(.top)
+            .foregroundColor(.red)
+
+            Spacer()
+        }
+        .alert(alertMessage, isPresented: $showAlert) {
+            Button("OK", role: .cancel) { }
         }
         .presentationDetents([.medium])
+    }
+
+    private func rejoindrePartie() {
+        guard !joinID.isEmpty, !joinPlayerName.isEmpty else {
+            alertMessage = "Veuillez entrer le code de la partie et votre nom."
+            showAlert = true
+            return
+        }
+
+        let firestore = FirestoreGameService()
+        let player = Player(id: manager.currentPlayerID, name: joinPlayerName)
+
+        firestore.sendJoinRequest(sessionID: joinID, player: player) { success in
+            if success {
+                // Demande acceptée, on attend que l’autre joueur accepte réellement
+                alertMessage = "✅ Demande envoyée !"
+                showAlert = true
+                joinID = ""
+                joinPlayerName = ""
+                showJoinPopup = false
+
+                // Démarre un polling pour détecter automatiquement si on est accepté
+                manager.startPollingSessions()
+
+            } else {
+                alertMessage = "❌ Code invalide ou erreur réseau."
+                showAlert = true
+            }
+        }
     }
 }

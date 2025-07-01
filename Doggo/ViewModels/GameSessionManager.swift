@@ -12,6 +12,8 @@ class GameSessionManager: ObservableObject {
     @Published var session: OnlineSession
     private weak var globalManager: GameManager?
     private var player: AVAudioPlayer?
+    private let firestoreService = FirestoreGameService()
+
 
     init(session: OnlineSession, manager: GameManager) {
         self.session = session
@@ -80,13 +82,17 @@ class GameSessionManager: ObservableObject {
             session.pendingRequests.remove(at: index)
             session.players.append(player)
             save()
+            firestoreService.updateSession(session)
         }
     }
+
 
     func rejectPlayer(_ player: Player) {
         session.pendingRequests.removeAll { $0.id == player.id }
         save()
+        firestoreService.updateSession(session)
     }
+
 
 }
 

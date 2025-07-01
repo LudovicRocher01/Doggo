@@ -64,9 +64,8 @@ class FirestoreGameService {
             }
 
             let filtered = sessions.filter {
-                $0.creatorID == playerID || $0.players.contains(where: { $0.id.uuidString == playerID })
+                $0.creatorID == playerID || $0.players.contains(where: { $0.id == playerID })
             }
-
             completion(filtered)
         }
     }

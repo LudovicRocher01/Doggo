@@ -8,11 +8,11 @@
 import Foundation
 
 struct Player: Identifiable, Codable {
-    let id: UUID
+    var id: String
     var name: String
     var score: Int
-    
-    init(id: UUID = UUID(), name: String, score: Int = 0) {
+
+    init(id: String = UUID().uuidString, name: String, score: Int = 0) {
         self.id = id
         self.name = name
         self.score = score
