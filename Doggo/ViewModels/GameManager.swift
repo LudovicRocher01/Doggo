@@ -33,10 +33,6 @@ class GameManager: ObservableObject {
         sessions.append(OnlineSession(mode: mode, players: players, creatorID: currentPlayerID))
     }
 
-    func removeSession(at offsets: IndexSet) {
-        sessions.remove(atOffsets: offsets)
-    }
-
     func updateSession(_ updatedSession: OnlineSession) {
         if let index = sessions.firstIndex(where: { $0.id == updatedSession.id }) {
             sessions[index] = updatedSession

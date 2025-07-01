@@ -76,7 +76,6 @@ struct ContentView: View {
                                 }
                             }
                         }
-                        .onDelete(perform: manager.removeSession)
                     }
                     .listStyle(InsetGroupedListStyle())
                     .scrollContentBackground(.hidden)
