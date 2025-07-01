@@ -6,9 +6,15 @@
 //
 
 import SwiftUI
+import Firebase
+import FirebaseFirestore
 
 @main
 struct DoggoApp: App {
+    init() {
+        FirebaseApp.configure()
+    }
+
     var body: some Scene {
         WindowGroup {
             ContentView()

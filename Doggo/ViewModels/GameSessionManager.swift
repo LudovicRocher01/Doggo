@@ -9,11 +9,11 @@ import Foundation
 import AVFoundation
 
 class GameSessionManager: ObservableObject {
-    @Published var session: GameSession
+    @Published var session: OnlineSession
     private weak var globalManager: GameManager?
     private var player: AVAudioPlayer?
 
-    init(session: GameSession, manager: GameManager) {
+    init(session: OnlineSession, manager: GameManager) {
         self.session = session
         self.globalManager = manager
     }
@@ -74,5 +74,19 @@ class GameSessionManager: ObservableObject {
             print("Erreur audio : \(error.localizedDescription)")
         }
     }
+    
+    func acceptPlayer(_ player: Player) {
+        if let index = session.pendingRequests.firstIndex(where: { $0.id == player.id }) {
+            session.pendingRequests.remove(at: index)
+            session.players.append(player)
+            save()
+        }
+    }
+
+    func rejectPlayer(_ player: Player) {
+        session.pendingRequests.removeAll { $0.id == player.id }
+        save()
+    }
+
 }
 

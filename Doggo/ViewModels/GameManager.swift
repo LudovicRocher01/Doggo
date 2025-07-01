@@ -9,42 +9,42 @@ import Foundation
 import SwiftUI
 
 class GameManager: ObservableObject {
-    @Published var sessions: [GameSession] = [] {
-        didSet {
-            saveSessions()
+    @Published var sessions: [OnlineSession] = []
+
+    init() {
+        loadSessionsFromFirestore()
+    }
+
+    var currentPlayerID: String {
+        if let existingID = UserDefaults.standard.string(forKey: "currentPlayerID") {
+            return existingID
+        } else {
+            let newID = UUID().uuidString
+            UserDefaults.standard.set(newID, forKey: "currentPlayerID")
+            return newID
         }
     }
 
-    init() {
-        loadSessions()
-    }
-
     func addSession(mode: GameMode, players: [Player]) {
-        sessions.append(GameSession(mode: mode, players: players))
+        sessions.append(OnlineSession(mode: mode, players: players, creatorID: currentPlayerID))
     }
-
 
     func removeSession(at offsets: IndexSet) {
         sessions.remove(atOffsets: offsets)
     }
 
-    private func saveSessions() {
-        if let encoded = try? JSONEncoder().encode(sessions) {
-            UserDefaults.standard.set(encoded, forKey: "savedSessions")
+    func updateSession(_ updatedSession: OnlineSession) {
+        if let index = sessions.firstIndex(where: { $0.id == updatedSession.id }) {
+            sessions[index] = updatedSession
         }
     }
 
-    private func loadSessions() {
-        if let data = UserDefaults.standard.data(forKey: "savedSessions"),
-           let decoded = try? JSONDecoder().decode([GameSession].self, from: data) {
-            sessions = decoded
-        }
-    }
-    
-    func updateSession(_ updatedSession: GameSession) {
-        if let index = sessions.firstIndex(where: { $0.id == updatedSession.id }) {
-            sessions[index] = updatedSession
-            saveSessions()
+    func loadSessionsFromFirestore() {
+        let service = FirestoreGameService()
+        service.fetchSessions(for: currentPlayerID) { [weak self] sessions in
+            DispatchQueue.main.async {
+                self?.sessions = sessions
+            }
         }
     }
 }

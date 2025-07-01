@@ -9,34 +9,33 @@ import SwiftUI
 
 struct SessionDetailView: View {
     @StateObject var manager: GameSessionManager
-    @State private var newPlayerName = ""
 
     var body: some View {
         VStack(spacing: 0) {
-            VStack {
+            VStack(spacing: 8) {
                 Text(manager.session.mode == .doggo ? "🐶 Doggo" : "🐱 Gato")
                     .font(.custom("ChalkboardSE-Bold", size: 28))
                     .foregroundColor(.brown)
+                    .padding(.top, 8)
 
-                HStack {
-                    TextField("Nom du joueur", text: $newPlayerName)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .padding(.horizontal)
+                if let id = manager.session.id {
+                    HStack(spacing: 4) {
+                        Text("Code de la partie :")
+                            .font(.caption)
+                            .foregroundColor(.gray)
 
-                    Button {
-                        guard !newPlayerName.isEmpty else { return }
-                        manager.addPlayer(name: newPlayerName)
-                        newPlayerName = ""
-                    } label: {
-                        Image(systemName: "plus.circle.fill")
-                            .font(.title)
-                            .foregroundColor(.blue)
+                        Button(action: {
+                            UIPasteboard.general.string = id
+                        }) {
+                            Label(id, systemImage: "doc.on.doc")
+                                .font(.caption)
+                                .foregroundColor(.blue)
+                        }
                     }
-                    .padding(.trailing)
+                    .padding(.bottom, 8)
                 }
-
-                Spacer().frame(height: 10)
             }
+            .frame(maxWidth: .infinity)
             .background(Color(red: 0.96, green: 0.93, blue: 0.87))
 
             ZStack(alignment: .bottom) {
@@ -47,47 +46,68 @@ struct SessionDetailView: View {
                     .ignoresSafeArea()
 
                 List {
-                    ForEach(manager.session.players) { player in
-                        VStack(alignment: .leading) {
-                            HStack {
-                                VStack(alignment: .leading) {
-                                    Text(player.name)
-                                        .font(.headline)
-                                    Text("\(player.score) \(player.score > 1 ? "points" : "point")")
-                                        .foregroundColor(.gray)
-                                }
-                                Spacer()
-                                HStack(spacing: 8) {
-                                    Button {
-                                        manager.decrementScore(for: player)
-                                    } label: {
-                                        Text("-1")
-                                            .padding(.vertical, 6)
-                                            .padding(.horizontal, 10)
-                                            .background(Color.red.opacity(0.2))
-                                            .foregroundColor(.red)
-                                            .cornerRadius(8)
+                    Section(header: Text("Joueurs").font(.headline)) {
+                        ForEach(manager.session.players) { player in
+                            VStack(alignment: .leading) {
+                                HStack {
+                                    VStack(alignment: .leading) {
+                                        Text(player.name)
+                                            .font(.headline)
+                                        Text("\(player.score) \(player.score > 1 ? "points" : "point")")
+                                            .foregroundColor(.gray)
                                     }
-                                    .buttonStyle(.borderless)
+                                    Spacer()
+                                    HStack(spacing: 8) {
+                                        Button {
+                                            manager.decrementScore(for: player)
+                                        } label: {
+                                            Text("-1")
+                                                .padding(.vertical, 6)
+                                                .padding(.horizontal, 10)
+                                                .background(Color.red.opacity(0.2))
+                                                .foregroundColor(.red)
+                                                .cornerRadius(8)
+                                        }
+                                        .buttonStyle(.borderless)
 
-                                    Button {
-                                        manager.incrementScore(for: player)
-                                    } label: {
-                                        Text(manager.session.mode == .doggo ? "🐶 Doggo !" : "🐱 Gato !")
-                                            .padding(.vertical, 6)
-                                            .padding(.horizontal, 10)
-                                            .background(Color.green.opacity(0.2))
-                                            .foregroundColor(.green)
-                                            .cornerRadius(8)
+                                        Button {
+                                            manager.incrementScore(for: player)
+                                        } label: {
+                                            Text(manager.session.mode == .doggo ? "🐶 Doggo !" : "🐱 Gato !")
+                                                .padding(.vertical, 6)
+                                                .padding(.horizontal, 10)
+                                                .background(Color.green.opacity(0.2))
+                                                .foregroundColor(.green)
+                                                .cornerRadius(8)
+                                        }
+                                        .buttonStyle(.borderless)
                                     }
-                                    .buttonStyle(.borderless)
+                                }
+                            }
+                            .padding(.vertical, 5)
+                        }
+                        .onDelete(perform: manager.removePlayers)
+                    }
+
+                    if !manager.session.pendingRequests.isEmpty {
+                        Section(header: Text("Demandes de participation").font(.headline)) {
+                            ForEach(manager.session.pendingRequests) { request in
+                                HStack {
+                                    Text(request.name)
+                                    Spacer()
+                                    Button("Accepter") {
+                                        manager.acceptPlayer(request)
+                                    }
+                                    .foregroundColor(.green)
+
+                                    Button("Refuser") {
+                                        manager.rejectPlayer(request)
+                                    }
+                                    .foregroundColor(.red)
                                 }
                             }
                         }
-                        .padding(.vertical, 5)
-                        .contentShape(Rectangle())
                     }
-                    .onDelete(perform: manager.removePlayers)
                 }
                 .listStyle(.plain)
                 .scrollContentBackground(.hidden)
