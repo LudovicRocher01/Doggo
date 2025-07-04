@@ -42,108 +42,108 @@ struct SessionDetailView: View {
             .frame(maxWidth: .infinity)
             .background(Color(red: 0.96, green: 0.93, blue: 0.87))
 
-            ZStack(alignment: .bottom) {
+            List {
+                Section(header:
+                    Text("Joueurs")
+                        .font(.headline)
+                        .padding(.horizontal, 10)
+                ) {
+                    ForEach(manager.session.players) { player in
+                        VStack(alignment: .leading) {
+                            HStack {
+                                VStack(alignment: .leading) {
+                                    Text(player.name)
+                                        .font(.headline)
+                                    Text("\(player.score) \(player.score > 1 ? "points" : "point")")
+                                        .foregroundColor(.gray)
+                                }
+                                Spacer()
+                                HStack(spacing: 8) {
+                                    Button {
+                                        manager.decrementScore(for: player)
+                                    } label: {
+                                        Text("-1")
+                                            .padding(.vertical, 6)
+                                            .padding(.horizontal, 10)
+                                            .background(Color.red.opacity(0.2))
+                                            .foregroundColor(.red)
+                                            .cornerRadius(8)
+                                    }
+                                    .buttonStyle(.borderless)
+
+                                    Button {
+                                        manager.incrementScore(for: player)
+                                    } label: {
+                                        Text(manager.session.mode == .doggo ? "🐶 Doggo !" : "🐱 Gato !")
+                                            .padding(.vertical, 6)
+                                            .padding(.horizontal, 10)
+                                            .background(Color.green.opacity(0.2))
+                                            .foregroundColor(.green)
+                                            .cornerRadius(8)
+                                    }
+                                    .buttonStyle(.borderless)
+                                }
+                            }
+                        }
+                        .padding(.vertical, 5)
+                        .padding(.horizontal, 10)
+                    }
+                }
+
+                if !manager.session.pendingRequests.isEmpty {
+                    Section(header:
+                        Text("Demandes de participation")
+                            .font(.headline)
+                            .padding(.horizontal, 10)
+                    ) {
+                        ForEach(manager.session.pendingRequests, id: \.id) { request in
+                            HStack {
+                                Text(request.name)
+                                Spacer()
+                                Button(action: {
+                                    if let requestPlayer = manager.session.pendingRequests.first(where: { $0.id == request.id }) {
+                                        manager.acceptPlayer(requestPlayer)
+                                    }
+                                }) {
+                                    Text("Accepter")
+                                }
+                                .foregroundColor(.green)
+                                .buttonStyle(.plain)
+
+                                Button(action: {
+                                    if let requestPlayer = manager.session.pendingRequests.first(where: { $0.id == request.id }) {
+                                        manager.rejectPlayer(requestPlayer)
+                                    }
+                                }) {
+                                    Text("Refuser")
+                                }
+                                .foregroundColor(.red)
+                                .buttonStyle(.plain)
+                            }
+                            .padding(.horizontal, 10)
+                        }
+                    }
+                }
+
+                Section {
+                    Button(role: .destructive) {
+                        showQuitAlert = true
+                    } label: {
+                        Text(manager.session.creatorID == manager.globalManager?.currentPlayerID ? "🗑 Supprimer la partie" : "🚪 Quitter la partie")
+                    }
+                }
+                .padding(.horizontal, 10)
+            }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            .background {
                 Image(manager.session.mode == .doggo ? "doggo_fond" : "gato_fond")
                     .resizable()
                     .scaledToFill()
                     .opacity(0.2)
                     .ignoresSafeArea()
-
-                List {
-                    Section(header:
-                        Text("Joueurs")
-                            .font(.headline)
-                            .padding(.horizontal, 10)
-                    ) {
-                        ForEach(manager.session.players) { player in
-                            VStack(alignment: .leading) {
-                                HStack {
-                                    VStack(alignment: .leading) {
-                                        Text(player.name)
-                                            .font(.headline)
-                                        Text("\(player.score) \(player.score > 1 ? "points" : "point")")
-                                            .foregroundColor(.gray)
-                                    }
-                                    Spacer()
-                                    HStack(spacing: 8) {
-                                        Button {
-                                            manager.decrementScore(for: player)
-                                        } label: {
-                                            Text("-1")
-                                                .padding(.vertical, 6)
-                                                .padding(.horizontal, 10)
-                                                .background(Color.red.opacity(0.2))
-                                                .foregroundColor(.red)
-                                                .cornerRadius(8)
-                                        }
-                                        .buttonStyle(.borderless)
-
-                                        Button {
-                                            manager.incrementScore(for: player)
-                                        } label: {
-                                            Text(manager.session.mode == .doggo ? "🐶 Doggo !" : "🐱 Gato !")
-                                                .padding(.vertical, 6)
-                                                .padding(.horizontal, 10)
-                                                .background(Color.green.opacity(0.2))
-                                                .foregroundColor(.green)
-                                                .cornerRadius(8)
-                                        }
-                                        .buttonStyle(.borderless)
-                                    }
-                                }
-                            }
-                            .padding(.vertical, 5)
-                            .padding(.horizontal, 10)
-                        }
-                    }
-
-                    if !manager.session.pendingRequests.isEmpty {
-                        Section(header:
-                            Text("Demandes de participation")
-                                .font(.headline)
-                                .padding(.horizontal, 10)
-                        ) {
-                            ForEach(manager.session.pendingRequests, id: \.id) { request in
-                                HStack {
-                                    Text(request.name)
-                                    Spacer()
-                                    Button(action: {
-                                        if let requestPlayer = manager.session.pendingRequests.first(where: { $0.id == request.id }) {
-                                            manager.acceptPlayer(requestPlayer)
-                                        }
-                                    }) {
-                                        Text("Accepter")
-                                    }
-                                    .foregroundColor(.green)
-                                    .buttonStyle(.plain)
-
-                                    Button(action: {
-                                        if let requestPlayer = manager.session.pendingRequests.first(where: { $0.id == request.id }) {
-                                            manager.rejectPlayer(requestPlayer)
-                                        }
-                                    }) {
-                                        Text("Refuser")
-                                    }
-                                    .foregroundColor(.red)
-                                    .buttonStyle(.plain)
-                                }
-                                .padding(.horizontal, 10)
-                            }
-                        }
-                    }
-
-                    Section {
-                        Button(role: .destructive) {
-                            showQuitAlert = true
-                        } label: {
-                            Text(manager.session.creatorID == manager.globalManager?.currentPlayerID ? "🗑 Supprimer la partie" : "🚪 Quitter la partie")
-                        }
-                    }
-                    .padding(.horizontal, 10)
-                }
-                .listStyle(.plain)
-                .scrollContentBackground(.hidden)
-
+            }
+            .overlay(alignment: .bottom) {
                 Text(manager.topScorerText)
                     .font(.subheadline)
                     .padding()
@@ -173,9 +173,10 @@ struct SessionDetailView: View {
                 secondaryButton: .cancel(Text("Non"))
             )
         }
-        .overlay(
-            VStack {
-                if showToast {
+        .overlay {
+            if showToast {
+                VStack {
+                    Spacer()
                     Text(toastMessage)
                         .padding()
                         .background(Color.black.opacity(0.8))
@@ -184,9 +185,9 @@ struct SessionDetailView: View {
                         .transition(.move(edge: .bottom).combined(with: .opacity))
                         .padding(.bottom, 30)
                 }
-                Spacer()
             }
-        )
+        }
         .animation(.easeInOut(duration: 0.3), value: showToast)
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
