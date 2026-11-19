@@ -1,0 +1,29 @@
+rules_version = '2';
+
+// Règles Firestore pour Doggo 2.0.
+// ⚠️ À publier APRÈS avoir activé « Authentication → Méthode de connexion → Anonyme »
+// dans la console Firebase, sinon l'app ne pourra plus lire ni écrire.
+// Les anciennes versions (1.x) ne s'authentifient pas : elles seront bloquées.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /sessions/{sessionId} {
+      // Tout utilisateur authentifié (anonymement) peut lire une partie :
+      // nécessaire pour rejoindre avec un code et pour la migration v1 → v2.
+      allow read: if request.auth != null;
+      allow create, update: if request.auth != null;
+      allow delete: if request.auth != null;
+
+      // Historique des points.
+      match /events/{eventId} {
+        allow read, create, update, delete: if request.auth != null;
+      }
+    }
+
+    // Tout le reste est fermé.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

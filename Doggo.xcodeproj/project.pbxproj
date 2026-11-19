@@ -9,10 +9,37 @@
 /* Begin PBXBuildFile section */
 		8AEB2A4D2DE493B200C7B16B /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 8AEB2A4C2DE493B200C7B16B /* FirebaseAnalyticsWithoutAdIdSupport */; };
 		8AEB2A512DE4956E00C7B16B /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 8AEB2A502DE4956E00C7B16B /* FirebaseFirestore */; };
+		8AEB2A552DE4956E00C7B16B /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 8AEB2A542DE4956E00C7B16B /* FirebaseAuth */; };
+		8AC0DE1B2EF0000000D0661A /* DoggoWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 8AC0DE112EF0000000D0661A /* DoggoWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		8AC0DE1D2EF0000000D0661A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8ABE11982DC42DD6006BF86A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8AC0DE102EF0000000D0661A;
+			remoteInfo = DoggoWidgets;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8AC0DE1A2EF0000000D0661A /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				8AC0DE1B2EF0000000D0661A /* DoggoWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		8ABE11A02DC42DD6006BF86A /* Doggo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Doggo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8AC0DE112EF0000000D0661A /* DoggoWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = DoggoWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -22,6 +49,13 @@
 				Info.plist,
 			);
 			target = 8ABE119F2DC42DD6006BF86A /* Doggo */;
+		};
+		8AC0DE132EF0000000D0661A /* Exceptions for "DoggoWidgets" folder in "DoggoWidgets" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 8AC0DE102EF0000000D0661A /* DoggoWidgets */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -34,6 +68,19 @@
 			path = Doggo;
 			sourceTree = "<group>";
 		};
+		8AC0DE012EF0000000D0661A /* Shared */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		8AC0DE122EF0000000D0661A /* DoggoWidgets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				8AC0DE132EF0000000D0661A /* Exceptions for "DoggoWidgets" folder in "DoggoWidgets" target */,
+			);
+			path = DoggoWidgets;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +90,14 @@
 			files = (
 				8AEB2A4D2DE493B200C7B16B /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
 				8AEB2A512DE4956E00C7B16B /* FirebaseFirestore in Frameworks */,
+				8AEB2A552DE4956E00C7B16B /* FirebaseAuth in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8AC0DE152EF0000000D0661A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -53,6 +108,8 @@
 			isa = PBXGroup;
 			children = (
 				8ABE11A22DC42DD6006BF86A /* Doggo */,
+				8AC0DE012EF0000000D0661A /* Shared */,
+				8AC0DE122EF0000000D0661A /* DoggoWidgets */,
 				8ABE11A12DC42DD6006BF86A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -61,6 +118,7 @@
 			isa = PBXGroup;
 			children = (
 				8ABE11A02DC42DD6006BF86A /* Doggo.app */,
+				8AC0DE112EF0000000D0661A /* DoggoWidgets.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -75,22 +133,49 @@
 				8ABE119C2DC42DD6006BF86A /* Sources */,
 				8ABE119D2DC42DD6006BF86A /* Frameworks */,
 				8ABE119E2DC42DD6006BF86A /* Resources */,
+				8AC0DE1A2EF0000000D0661A /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8AC0DE1C2EF0000000D0661A /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				8ABE11A22DC42DD6006BF86A /* Doggo */,
+				8AC0DE012EF0000000D0661A /* Shared */,
+			);
+			name = Doggo;
+			packageProductDependencies = (
+				8AEB2A4C2DE493B200C7B16B /* FirebaseAnalyticsWithoutAdIdSupport */,
+				8AEB2A502DE4956E00C7B16B /* FirebaseFirestore */,
+				8AEB2A542DE4956E00C7B16B /* FirebaseAuth */,
+			);
+			productName = Doggo;
+			productReference = 8ABE11A02DC42DD6006BF86A /* Doggo.app */;
+			productType = "com.apple.product-type.application";
+		};
+		8AC0DE102EF0000000D0661A /* DoggoWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8AC0DE172EF0000000D0661A /* Build configuration list for PBXNativeTarget "DoggoWidgets" */;
+			buildPhases = (
+				8AC0DE142EF0000000D0661A /* Sources */,
+				8AC0DE152EF0000000D0661A /* Frameworks */,
+				8AC0DE162EF0000000D0661A /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				8ABE11A22DC42DD6006BF86A /* Doggo */,
+				8AC0DE122EF0000000D0661A /* DoggoWidgets */,
+				8AC0DE012EF0000000D0661A /* Shared */,
 			);
-			name = Doggo;
+			name = DoggoWidgets;
 			packageProductDependencies = (
-				8AEB2A4C2DE493B200C7B16B /* FirebaseAnalyticsWithoutAdIdSupport */,
-				8AEB2A502DE4956E00C7B16B /* FirebaseFirestore */,
 			);
-			productName = Doggo;
-			productReference = 8ABE11A02DC42DD6006BF86A /* Doggo.app */;
-			productType = "com.apple.product-type.application";
+			productName = DoggoWidgets;
+			productReference = 8AC0DE112EF0000000D0661A /* DoggoWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -105,12 +190,16 @@
 					8ABE119F2DC42DD6006BF86A = {
 						CreatedOnToolsVersion = 16.2;
 					};
+					8AC0DE102EF0000000D0661A = {
+						CreatedOnToolsVersion = 26.4;
+					};
 				};
 			};
 			buildConfigurationList = 8ABE119B2DC42DD6006BF86A /* Build configuration list for PBXProject "Doggo" */;
-			developmentRegion = en;
+			developmentRegion = fr;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				fr,
 				en,
 				Base,
 			);
@@ -125,12 +214,20 @@
 			projectRoot = "";
 			targets = (
 				8ABE119F2DC42DD6006BF86A /* Doggo */,
+				8AC0DE102EF0000000D0661A /* DoggoWidgets */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		8ABE119E2DC42DD6006BF86A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8AC0DE162EF0000000D0661A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -147,7 +244,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		8AC0DE142EF0000000D0661A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		8AC0DE1C2EF0000000D0661A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8AC0DE102EF0000000D0661A /* DoggoWidgets */;
+			targetProxy = 8AC0DE1D2EF0000000D0661A /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		8ABE11AC2DC42DD8006BF86A /* Debug */ = {
@@ -285,13 +397,15 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.family-games";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ludovicrocher.Doggo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -320,19 +434,79 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.family-games";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ludovicrocher.Doggo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		8AC0DE182EF0000000D0661A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 96WJWVZ5ZV;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DoggoWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Doggo;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 2.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ludovicrocher.Doggo.DoggoWidgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		8AC0DE192EF0000000D0661A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 96WJWVZ5ZV;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DoggoWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Doggo;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 2.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ludovicrocher.Doggo.DoggoWidgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -360,6 +534,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		8AC0DE172EF0000000D0661A /* Build configuration list for PBXNativeTarget "DoggoWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8AC0DE182EF0000000D0661A /* Debug */,
+				8AC0DE192EF0000000D0661A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -383,6 +566,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8AEB2A4B2DE493B200C7B16B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
+		};
+		8AEB2A542DE4956E00C7B16B /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8AEB2A4B2DE493B200C7B16B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
