@@ -9,6 +9,7 @@
 
 #if DEBUG
 import Foundation
+import FirebaseAuth
 import FirebaseCore
 import FirebaseFirestore
 
@@ -84,6 +85,12 @@ enum SelfTest {
             FirebaseApp.configure(name: "selftestB", options: options)
         }
         guard let appB = FirebaseApp.app(name: "selftestB") else { return log("FAIL pas de second client") }
+        // Chaque client a sa propre session d'authentification (exigée par les règles).
+        do {
+            if Auth.auth(app: appB).currentUser == nil { _ = try await Auth.auth(app: appB).signInAnonymously() }
+        } catch {
+            return log("FAIL connexion anonyme du second client : \(error.localizedDescription)")
+        }
         let dbB = Firestore.firestore(app: appB)
         let repoA = SessionRepository(firestore: primaryDB)
         let repoB = SessionRepository(firestore: dbB)
