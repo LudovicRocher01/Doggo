@@ -45,6 +45,23 @@ struct GameView: View {
             #endif
         }
         .onDisappear { model.stop() }
+        #if DEBUG
+        .onReceive(NotificationCenter.default.publisher(for: DemoDirector.notification)) { note in
+            guard let command = note.object as? DemoDirector.Command else { return }
+            switch command {
+            case .score(let id): model.score(id)
+            case .remote(let id): model.demoRemoteScore(id)
+            case .sheet(let name):
+                showInvite = name == "invite"
+                showStats = name == "stats"
+                showHistory = name == "history"
+            case .dismissSheets:
+                showInvite = false
+                showStats = false
+                showHistory = false
+            }
+        }
+        #endif
         .onChange(of: model.wasDeleted) { _, deleted in
             if deleted { Task { try? await Task.sleep(for: .seconds(1.2)); dismiss() } }
         }

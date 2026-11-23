@@ -72,6 +72,54 @@ enum DemoData {
     }
 }
 
+/// Démo scénarisée pour filmer l'aperçu App Store (`-DoggoDemo YES -DoggoDemoScript YES`).
+@MainActor
+enum DemoDirector {
+    enum Command {
+        case score(String)
+        case remote(String)
+        case sheet(String)
+        case dismissSheets
+    }
+
+    static let notification = Notification.Name("DoggoDemoCommand")
+    static var isEnabled: Bool { UserDefaults.standard.bool(forKey: "DoggoDemoScript") }
+
+    private static func send(_ command: Command) {
+        NotificationCenter.default.post(name: notification, object: command)
+    }
+
+    private static func wait(_ seconds: Double) async {
+        try? await Task.sleep(for: .seconds(seconds))
+    }
+
+    static func run(app: AppModel) async {
+        await wait(2.6)                     // accueil
+        app.path = ["DEMO01"]
+        await wait(1.8)
+        send(.score(DemoData.me))           // je marque
+        await wait(1.1)
+        send(.score("p2"))
+        await wait(1.3)
+        send(.remote("p4"))                 // un ami marque depuis son téléphone
+        await wait(1.6)
+        send(.score(DemoData.me))
+        await wait(0.6)
+        send(.score(DemoData.me))
+        await wait(1.6)
+        send(.sheet("invite"))
+        await wait(3.0)
+        send(.dismissSheets)
+        await wait(1.0)
+        send(.sheet("stats"))
+        await wait(3.2)
+        send(.dismissSheets)
+        await wait(1.0)
+        app.path = ["DEMO03"]               // fin de partie : podium
+        await wait(5.0)
+    }
+}
+
 enum SelfTest {
     static var isEnabled: Bool { UserDefaults.standard.bool(forKey: "DoggoSelfTest") }
 

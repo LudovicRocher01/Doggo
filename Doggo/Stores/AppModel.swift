@@ -56,6 +56,7 @@ final class AppModel {
             sessions = DemoData.sessions
             isLoaded = true
             if let id = UserDefaults.standard.string(forKey: "DoggoDemoOpen") { path = [id] }
+            if DemoDirector.isEnabled { Task { await DemoDirector.run(app: self) } }
             return
         }
         #endif

@@ -88,7 +88,9 @@ struct HomeView: View {
             }
             .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: String.self) { id in
+                // .id : chaque partie a son propre état (sinon « Revanche » réaffiche l'ancienne partie).
                 GameView(sessionID: id)
+                    .id(id)
             }
         }
         .sheet(isPresented: $showCreate) {

@@ -135,6 +135,20 @@ final class GameModel {
         LiveActivityManager.applyLocalPoint(sessionID: sessionID, playerID: playerID)
     }
 
+    #if DEBUG
+    /// Démo : simule un point marqué par un ami sur un autre téléphone.
+    func demoRemoteScore(_ playerID: String) {
+        guard DemoData.isDemo(sessionID) else { return }
+        session?.scores[playerID, default: 0] += 1
+        var event = ScoreEvent(playerID: playerID, byID: playerID, createdAt: Date())
+        event.id = UUID().uuidString
+        events.insert(event, at: 0)
+        bursts[playerID, default: 0] += 1
+        show(Banner(emoji: member(playerID)?.emoji ?? mode.emoji, text: "\(name(playerID)) a crié \(mode.shout)"))
+        Feedback.shared.tap()
+    }
+    #endif
+
     func lastEvent(for playerID: String) -> ScoreEvent? {
         events.first { $0.playerID == playerID && !$0.undone && $0.id != nil }
     }
