@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8AEB2A4D2DE493B200C7B16B /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 8AEB2A4C2DE493B200C7B16B /* FirebaseAnalyticsWithoutAdIdSupport */; };
 		8AEB2A512DE4956E00C7B16B /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 8AEB2A502DE4956E00C7B16B /* FirebaseFirestore */; };
 		8AEB2A552DE4956E00C7B16B /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 8AEB2A542DE4956E00C7B16B /* FirebaseAuth */; };
 		8AC0DE1B2EF0000000D0661A /* DoggoWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 8AC0DE112EF0000000D0661A /* DoggoWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -88,7 +87,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8AEB2A4D2DE493B200C7B16B /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
 				8AEB2A512DE4956E00C7B16B /* FirebaseFirestore in Frameworks */,
 				8AEB2A552DE4956E00C7B16B /* FirebaseAuth in Frameworks */,
 			);
@@ -146,7 +144,6 @@
 			);
 			name = Doggo;
 			packageProductDependencies = (
-				8AEB2A4C2DE493B200C7B16B /* FirebaseAnalyticsWithoutAdIdSupport */,
 				8AEB2A502DE4956E00C7B16B /* FirebaseFirestore */,
 				8AEB2A542DE4956E00C7B16B /* FirebaseAuth */,
 			);
@@ -557,11 +554,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		8AEB2A4C2DE493B200C7B16B /* FirebaseAnalyticsWithoutAdIdSupport */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8AEB2A4B2DE493B200C7B16B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAnalyticsWithoutAdIdSupport;
-		};
 		8AEB2A502DE4956E00C7B16B /* FirebaseFirestore */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8AEB2A4B2DE493B200C7B16B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

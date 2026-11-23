@@ -117,7 +117,7 @@ Mettre à jour les données collectées :
 | **Identifiant utilisateur** (ID anonyme) | Fonctionnalités de l'app | Oui | Non |
 | **Contenu de jeu** (scores, historique) | Fonctionnalités de l'app | Oui | Non |
 
-⚠️ Le projet embarque aussi **Firebase Analytics** (`FirebaseAnalyticsWithoutAdIdSupport`), qui collecte des données d'usage (interactions, diagnostics). Si tu ne l'utilises pas dans la console Firebase, retire ce paquet du projet ; sinon, déclare aussi « Interactions avec le produit » et « Autres données de diagnostic » (Analytics, non liées, pas de suivi).
+Doggo n'embarque plus aucun outil d'analyse (Firebase Analytics retiré en 2.0) : rien d'autre à déclarer. Si une ancienne déclaration mentionne des données d'usage ou de diagnostic, supprime-la.
 
 URL de la politique de confidentialité :
 `https://github.com/LudovicRocher01/Doggo/blob/main/Confidentialit%C3%A9.md`
